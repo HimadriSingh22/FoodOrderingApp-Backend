@@ -8,7 +8,7 @@ import java.io.Serializable;
 @Entity
 @Table(name="users",schema="quora")
 @NamedQueries({
-        @NamedQuery(name="getEmail",query="SELECT email from CustomerEntity")
+        @NamedQuery(name="customerByContact",query="SELECT c from CustomerEntity where c.contact_number=:contact_number")
 })
 public class CustomerEntity implements Serializable {
 
@@ -99,5 +99,18 @@ public class CustomerEntity implements Serializable {
     @Column(name="salt")
     @NotNull
     private String salt;
+
+    public String getContact_no() {
+        return contact_no;
+    }
+
+    public void setContact_no(String contact_no) {
+        this.contact_no = contact_no;
+    }
+
+    @Column(name="contact_number")
+
+    @NotNull
+    private String contact_no;
 
 }
