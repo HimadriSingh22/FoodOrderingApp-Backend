@@ -7,6 +7,8 @@ import org.springframework.stereotype.Repository;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
+import java.util.ArrayList;
+import java.util.List;
 
 @Repository
 public class CustomerDao {
@@ -38,4 +40,6 @@ public class CustomerDao {
     {
         entityManager.merge(updatedCustomerEntity);
     }
+
+
 }

@@ -9,6 +9,7 @@ import java.io.Serializable;
 @Table(name="users",schema="quora")
 @NamedQueries({
         @NamedQuery(name="customerByContact",query="SELECT c from CustomerEntity where c.contact_number=:contact_number")
+
 })
 public class CustomerEntity implements Serializable {
 
