@@ -4,7 +4,9 @@ import com.upgrad.FoodOrderingApp.service.dao.CustomerDao;
 import com.upgrad.FoodOrderingApp.service.entity.CustomerAuthEntity;
 import com.upgrad.FoodOrderingApp.service.entity.CustomerEntity;
 import com.upgrad.FoodOrderingApp.service.exception.AuthenticationFailedException;
+import com.upgrad.FoodOrderingApp.service.exception.AuthorizationFailedException;
 import com.upgrad.FoodOrderingApp.service.exception.SignUpRestrictedException;
+import com.upgrad.FoodOrderingApp.service.exception.UpdateCustomerException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -65,6 +67,52 @@ public class CustomerBusinessService {
         }
     }
 
+    //method to check email format
+
+    public boolean validEmail(String email)
+    {
+
+        String regex = "^[a-zA-Z0-9_+&*-]+(?:\\."+
+                "[a-zA-Z0-9_+&*-]+)*@" +
+                "(?:[a-zA-Z0-9-]+\\.)+[a-z" +
+                "A-Z]{2,7}$"; ;
+        Pattern pattern = Pattern.compile(regex);
+        return pattern.matcher(email).matches();
+    }
+
+    //method to check contact number format
+    public boolean validContact(String contact){
+        boolean p=false;
+        if(contact.length()==10){
+            Pattern pattern = Pattern.compile("[0-9]");
+            p = pattern.matcher(contact).find();
+        }
+        return p;
+    }
+
+    // method to check password strength
+    public boolean checkPasswordStrength(String password)
+    {
+        boolean strong=false;
+        if(password.length()>=8)
+        {
+            Pattern capital = Pattern.compile("[A-Z]");
+            Pattern small =Pattern.compile("[a-z]");
+            Pattern digit=Pattern.compile("[0-9]");
+            Pattern special=Pattern.compile("[!@#$%^&*()_+=/?>.<'|]");
+            Matcher hasUpperCase=capital.matcher(password);
+            Matcher hasLowerCase=small.matcher(password);
+            Matcher hasDigit =digit.matcher(password);
+            Matcher hasSpecial = special.matcher(password);
+            if(hasUpperCase.find()&&hasLowerCase.find()&&hasDigit.find()&&hasSpecial.find())
+            {
+                strong=true;
+            }
+        }
+        return strong;
+    }
+
+
 
     //login method
     @Transactional(propagation = Propagation.REQUIRED)
@@ -96,50 +144,67 @@ public class CustomerBusinessService {
         }
     }
 
-    // method to check password strength
-    public boolean checkPasswordStrength(String password)
+    //logout method
+    @Transactional(propagation = Propagation.REQUIRED)
+    public CustomerAuthEntity logout(String accessToken)throws AuthorizationFailedException
     {
-        boolean strong=false;
-        if(password.length()>=8)
+        CustomerAuthEntity customerAuthEntity = customerDao.getCustomerAuthToken(accessToken);
+        if(customerAuthEntity==null)
         {
-                Pattern capital = Pattern.compile("[A-Z]");
-                Pattern small =Pattern.compile("[a-z]");
-                Pattern digit=Pattern.compile("[0-9]");
-                Pattern special=Pattern.compile("[!@#$%^&*()_+=/?>.<'|]");
-                Matcher hasUpperCase=capital.matcher(password);
-                Matcher hasLowerCase=small.matcher(password);
-                Matcher hasDigit =digit.matcher(password);
-                Matcher hasSpecial = special.matcher(password);
-                if(hasUpperCase.find()&&hasLowerCase.find()&&hasDigit.find()&&hasSpecial.find())
-                {
-                    strong=true;
-                }
+            throw new AuthorizationFailedException("ATH-001","Customer is not logged in!");
         }
-        return strong;
+
+        final ZonedDateTime now = ZonedDateTime.now();
+        if(customerAuthEntity.getLogoutAt().isBefore(now))
+        {
+            throw new AuthorizationFailedException("ATH-002","Customer is logged out ! Login again to access this endpoint!");
+
+        }
+        if(customerAuthEntity.getExpiresAt().isBefore(now))
+        {
+            throw new AuthorizationFailedException("ATH-003","Your session is expired.Log in again to access this endpoint!");
+        }
+        else
+            {
+        customerAuthEntity.setLogoutAt(now);
+        customerDao.updateCustomerAuthEntity(customerAuthEntity);
+        return customerAuthEntity;
+        }
     }
 
-    //method to check email format
-
-    public boolean validEmail(String email)
+    @Transactional(propagation = Propagation.REQUIRED)
+    public CustomerEntity update(String accessToken,CustomerEntity updateCustomer) throws AuthorizationFailedException,UpdateCustomerException
     {
-
-        String regex = "^[a-zA-Z0-9_+&*-]+(?:\\."+
-                "[a-zA-Z0-9_+&*-]+)*@" +
-                "(?:[a-zA-Z0-9-]+\\.)+[a-z" +
-                "A-Z]{2,7}$"; ;
-        Pattern pattern = Pattern.compile(regex);
-        return pattern.matcher(email).matches();
-    }
-
-    //method to check contact number format
-    public boolean validContact(String contact){
-        boolean p=false;
-        if(contact.length()==10){
-            Pattern pattern = Pattern.compile("[0-9]");
-             p = pattern.matcher(contact).find();
+        CustomerAuthEntity customerAuthEntity = customerDao.getCustomerAuthToken(accessToken);
+        if(customerAuthEntity==null)
+        {
+            throw new AuthorizationFailedException("ATH-001","Customer is not logged in!");
         }
-        return p;
+
+        final ZonedDateTime now = ZonedDateTime.now();
+        if(customerAuthEntity.getLogoutAt().isBefore(now))
+        {
+            throw new AuthorizationFailedException("ATH-002","Customer is logged out ! Login again to access this endpoint!");
+
+        }
+        if(customerAuthEntity.getExpiresAt().isBefore(now))
+        {
+            throw new AuthorizationFailedException("ATH-003","Your session is expired.Log in again to access this endpoint!");
+        }
+        else
+        {
+            if(updateCustomer.getFirstname()==null)
+            {
+                throw new UpdateCustomerException("UCR-002","FirstName can not be empty!!");
+            }
+
+            CustomerEntity updatedCustomer = customerDao.updateCustomerDetails(updateCustomer);
+            return updatedCustomer;
+
+        }
     }
+
+
 
 
 }

@@ -9,6 +9,9 @@ import java.time.ZonedDateTime;
 
 @Entity
 @Table(name="customer_auth",schema = "restaurntdb")
+@NamedQueries({
+        @NamedQuery(name="customerAuthTokenByAccessToken",query="select ct from CustomerAuthEntity ct where ct.accessToken =:accessToken")
+})
 public class CustomerAuthEntity {
 
     @Id
@@ -28,6 +31,18 @@ public class CustomerAuthEntity {
     @NotNull
     @Size(max=200)
     private String accessToken;
+
+    @Column(name="login_at")
+    @NotNull
+    private ZonedDateTime loginAt;
+
+    @Column(name="logout_at")
+    @NotNull
+    private ZonedDateTime logoutAt;
+
+    @Column(name="expires_at")
+    @NotNull
+    private ZonedDateTime expiresAt;
 
     public Integer getId() {
         return id;
@@ -85,15 +100,5 @@ public class CustomerAuthEntity {
         this.expiresAt = expiresAt;
     }
 
-    @Column(name="login_at")
-    @NotNull
-    private ZonedDateTime loginAt;
 
-    @Column(name="logout_at")
-    @NotNull
-    private ZonedDateTime logoutAt;
-
-    @Column(name="expires_at")
-    @NotNull
-    private ZonedDateTime expiresAt;
 }

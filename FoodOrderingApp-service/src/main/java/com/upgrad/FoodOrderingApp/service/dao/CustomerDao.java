@@ -36,10 +36,28 @@ public class CustomerDao {
         return customerAuthEntity;
     }
 
+    public CustomerAuthEntity getCustomerAuthToken(final String accessToken)
+    {
+        try{
+          return entityManager.createNamedQuery("customerAuthTokenByAccessToken",CustomerAuthEntity.class).setParameter("accessToken",accessToken).getSingleResult();
+        }catch(NoResultException n)
+        {
+            return null;
+        }
+    }
+
     public void updateCustomer(final CustomerEntity updatedCustomerEntity)
     {
         entityManager.merge(updatedCustomerEntity);
     }
 
+    public void updateCustomerAuthEntity(final CustomerAuthEntity updatedCustomerAuthEntity)
+    {
+        entityManager.merge(updatedCustomerAuthEntity);
+    }
+    public CustomerEntity updateCustomerDetails(final CustomerEntity updateCustomer)
+    {
+       return entityManager.merge(updateCustomer);
 
+    }
 }
