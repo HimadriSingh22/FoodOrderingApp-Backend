@@ -172,39 +172,75 @@ public class CustomerBusinessService {
         }
     }
 
+    // update customer details method
     @Transactional(propagation = Propagation.REQUIRED)
-    public CustomerEntity update(String accessToken,CustomerEntity updateCustomer) throws AuthorizationFailedException,UpdateCustomerException
-    {
+    public CustomerEntity updateCustomer(String accessToken,CustomerEntity updateCustomer) throws AuthorizationFailedException,UpdateCustomerException {
         CustomerAuthEntity customerAuthEntity = customerDao.getCustomerAuthToken(accessToken);
-        if(customerAuthEntity==null)
-        {
-            throw new AuthorizationFailedException("ATH-001","Customer is not logged in!");
+        if (customerAuthEntity == null) {
+            throw new AuthorizationFailedException("ATH-001", "Customer is not logged in!");
         }
 
         final ZonedDateTime now = ZonedDateTime.now();
-        if(customerAuthEntity.getLogoutAt().isBefore(now))
-        {
-            throw new AuthorizationFailedException("ATH-002","Customer is logged out ! Login again to access this endpoint!");
+        if (customerAuthEntity.getLogoutAt().isBefore(now)) {
+            throw new AuthorizationFailedException("ATH-002", "Customer is logged out ! Login again to access this endpoint!");
 
         }
-        if(customerAuthEntity.getExpiresAt().isBefore(now))
-        {
-            throw new AuthorizationFailedException("ATH-003","Your session is expired.Log in again to access this endpoint!");
+        if (customerAuthEntity.getExpiresAt().isBefore(now)) {
+            throw new AuthorizationFailedException("ATH-003", "Your session is expired.Log in again to access this endpoint!");
         }
-        else
-        {
-            if(updateCustomer.getFirstname()==null)
-            {
-                throw new UpdateCustomerException("UCR-002","FirstName can not be empty!!");
-            }
-
+        else {
             CustomerEntity updatedCustomer = customerDao.updateCustomerDetails(updateCustomer);
             return updatedCustomer;
+        }
+    }
 
+    //update password method
+    @Transactional(propagation = Propagation.REQUIRED)
+        public CustomerEntity updatePassword(String accessToken , CustomerEntity updateOldPassword ,String oldPassword )throws  AuthorizationFailedException,UpdateCustomerException
+        {
+            //matching old password
+            final String encryptedPassword = cryptographyProvider.encrypt(oldPassword,updateOldPassword.getSalt());
+            if(encryptedPassword.equals(oldPassword)==false)
+            {
+                throw new UpdateCustomerException("UCR-004","Incorrect Old Password!");
+            }
+            // Checking password strength
+            boolean strong =checkPasswordStrength(updateOldPassword.getPassword());
+            if(strong==false)
+            {
+                throw new UpdateCustomerException("UCR-001","Weak Password!!");
+            }
+
+            //authenticating customer
+            CustomerAuthEntity customerAuthEntity = customerDao.getCustomerAuthToken(accessToken);
+            if(customerAuthEntity==null)
+            {
+                throw new AuthorizationFailedException("ATH-001","Customer is not logged in!");
+            }
+
+            final ZonedDateTime now = ZonedDateTime.now();
+            if(customerAuthEntity.getLogoutAt().isBefore(now))
+            {
+                throw new AuthorizationFailedException("ATH-002","Customer is logged out ! Login again to access this endpoint!");
+
+            }
+
+            if(customerAuthEntity.getExpiresAt().isBefore(now))
+            {
+                throw new AuthorizationFailedException("ATH-003","Your session is expired.Log in again to access this endpoint!");
+            }
+
+            else
+            {
+                String[] encryptedText = cryptographyProvider.encrypt(updateOldPassword.getPassword());
+                updateOldPassword.setSalt(encryptedText[0]);
+                updateOldPassword.setPassword(encryptedText[1]);
+                return customerDao.updatePassword(updateOldPassword);
+            }
         }
     }
 
 
 
 
-}
+

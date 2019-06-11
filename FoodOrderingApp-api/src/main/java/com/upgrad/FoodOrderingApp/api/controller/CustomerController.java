@@ -27,6 +27,8 @@ public class CustomerController {
 
     @Autowired
     CustomerBusinessService customerBusinessService;
+
+    //Signup request
     @RequestMapping(method = RequestMethod.POST,path="/customer/signup",consumes = MediaType.APPLICATION_JSON_UTF8_VALUE,produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<SignupCustomerResponse> signup(final SignupCustomerRequest signupCustomerRequest) throws SignUpRestrictedException {
        final CustomerEntity customerEntity=new CustomerEntity();
@@ -40,6 +42,7 @@ public class CustomerController {
        return new ResponseEntity<SignupCustomerResponse>(customerResponse,HttpStatus.CREATED);
     }
 
+    //login Request
     @RequestMapping(method = RequestMethod.POST,path="/customer/login",produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<LoginResponse> login(@RequestHeader("authorization") final String authorization) throws AuthenticationFailedException {
         byte[] decode =Base64.getDecoder().decode(authorization.split("Basic")[1]);
@@ -56,6 +59,7 @@ public class CustomerController {
 
     }
 
+    //Logout Request
     @RequestMapping(method=RequestMethod.POST,path="/customer/logout",produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<LogoutResponse> logout(@RequestHeader("authorization")final String authorization)throws AuthorizationFailedException
     {
@@ -65,16 +69,42 @@ public class CustomerController {
         return new ResponseEntity<LogoutResponse>(logoutResponse,HttpStatus.OK);
     }
 
+    // update Customer Details Request
     @RequestMapping(method = RequestMethod.PUT,path="/customer",produces = MediaType.APPLICATION_JSON_UTF8_VALUE,consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public ResponseEntity<UpdateCustomerResponse> update(@RequestHeader("authorization")final String authorization,final UpdateCustomerRequest updateCustomerRequest)throws AuthorizationFailedException , UpdateCustomerException
+    public ResponseEntity<UpdateCustomerResponse> updateCustomer(@RequestHeader("authorization")final String authorization,final UpdateCustomerRequest updateCustomerRequest)throws AuthorizationFailedException , UpdateCustomerException
     {
+
         CustomerEntity updateCustomer =new CustomerEntity();
+        if (updateCustomer.getFirstname() == null)
+        {
+            throw new UpdateCustomerException("UCR-002", "FirstName can not be empty!!");
+        }
+
         updateCustomer.setFirstname(updateCustomerRequest.getFirstName());
         updateCustomer.setLastname(updateCustomerRequest.getLastName());
-         final CustomerEntity updatedCustomerEntity = customerBusinessService.update(authorization,updateCustomer);
+
+         final CustomerEntity updatedCustomerEntity = customerBusinessService.updateCustomer(authorization,updateCustomer);
         UpdateCustomerResponse updateCustomerResponse=new UpdateCustomerResponse().id(updatedCustomerEntity.getUuid()).firstName(updatedCustomerEntity.getFirstname())
                 .lastName(updatedCustomerEntity.getLastname()).status("CUSTOMER DETAILS UPDATED SUCCESSFULLY");
         return new ResponseEntity<UpdateCustomerResponse>(updateCustomerResponse,HttpStatus.OK);
 
+    }
+
+    // update Password Request
+    @RequestMapping(method = RequestMethod.PUT,path="/customer/password",produces = MediaType.APPLICATION_JSON_UTF8_VALUE,consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity<UpdatePasswordResponse> updatePassword(@RequestHeader("authorization")final String authorization , final UpdatePasswordRequest updatePasswordRequest)throws AuthorizationFailedException,UpdateCustomerException
+    {
+        CustomerEntity updateOldPassword = new CustomerEntity();
+        if(updatePasswordRequest.getOldPassword()==null||updatePasswordRequest.getNewPassword()==null)
+        {
+            throw new UpdateCustomerException("UCR-003","No field should be empty!!");
+        }
+
+
+        updateOldPassword.setPassword(updatePasswordRequest.getNewPassword());
+        final CustomerEntity updatedCustomerEntity = customerBusinessService.updatePassword(authorization,updateOldPassword,updatePasswordRequest.getOldPassword());
+
+        UpdatePasswordResponse updatePasswordResponse=new UpdatePasswordResponse().id(updatedCustomerEntity.getUuid()).status("CUSTOMER PASSWORD UPDATED SUCCESSFULLY!");
+        return new ResponseEntity<UpdatePasswordResponse>(updatePasswordResponse,HttpStatus.OK);
     }
 }
