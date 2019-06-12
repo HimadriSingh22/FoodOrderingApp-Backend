@@ -1,6 +1,6 @@
 package com.upgrad.FoodOrderingApp.service.entity;
 
-import org.springframework.data.annotation.Id;
+
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -9,8 +9,8 @@ import java.time.ZonedDateTime;
 
 @Entity
 @Table(name="customer_auth",schema = "restaurntdb")
-@NamedQueries({
-        @NamedQuery(name="customerAuthTokenByAccessToken",query="select ct from CustomerAuthEntity ct where ct.accessToken =:accessToken")
+@NamedQueries ({
+        @NamedQuery(name="customerAuthTokenByAccessToken",query="select ct from CustomerAuthEntity ct where ct.accessToken = :accessToken")
 })
 public class CustomerAuthEntity {
 

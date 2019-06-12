@@ -8,6 +8,7 @@ import com.upgrad.FoodOrderingApp.service.exception.AuthorizationFailedException
 import com.upgrad.FoodOrderingApp.service.exception.SignUpRestrictedException;
 import com.upgrad.FoodOrderingApp.service.exception.UpdateCustomerException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,7 +17,7 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
+@Service
 public class CustomerBusinessService {
     @Autowired
     private CustomerDao customerDao;
@@ -28,7 +29,7 @@ public class CustomerBusinessService {
     public CustomerEntity signup(CustomerEntity customerEntity)throws SignUpRestrictedException{
 
         //Checking if any field is empty other than lastname
-         if(customerEntity.getFirstname()==null||customerEntity.getContact_no()==null||customerEntity.getEmail()==null||customerEntity.getPassword()==null)
+         if(customerEntity.getFirstname()==null||customerEntity.getContact_number()==null||customerEntity.getEmail()==null||customerEntity.getPassword()==null)
          {
              throw new SignUpRestrictedException("SGR-005","All fields except lastName should be filled!!");
          }
@@ -40,7 +41,7 @@ public class CustomerBusinessService {
          }
 
         // checking whether the number already exists in the database
-        CustomerEntity customerEntity1=customerDao.getCustomerByContact(customerEntity.getContact_no());
+        CustomerEntity customerEntity1=customerDao.getCustomerByContact(customerEntity.getContact_number());
         if(customerEntity1!=null ){
             throw new SignUpRestrictedException("SGR-001","This contact number is already registered!! Try other contact number!!");
         }
@@ -53,7 +54,7 @@ public class CustomerBusinessService {
         }
 
         //checking whether contact is valid or not
-        boolean isFormat = validContact(customerEntity.getContact_no());
+        boolean isFormat = validContact(customerEntity.getContact_number());
         if(isFormat==false)
         {
             throw new SignUpRestrictedException("SGR-003","Invalid Contact Number");

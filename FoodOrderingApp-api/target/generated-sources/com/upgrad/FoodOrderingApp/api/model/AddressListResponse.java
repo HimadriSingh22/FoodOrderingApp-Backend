@@ -16,7 +16,7 @@ import javax.validation.constraints.*;
  * AddressListResponse
  */
 @Validated
-@javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2019-06-08T18:13:40.825+05:30")
+@javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2019-06-11T20:39:48.046+05:30")
 
 public class AddressListResponse   {
   @JsonProperty("addresses")
@@ -30,7 +30,7 @@ public class AddressListResponse   {
 
   public AddressListResponse addAddressesItem(AddressList addressesItem) {
     if (this.addresses == null) {
-      this.addresses = new ArrayList<>();
+      this.addresses = new ArrayList<AddressList>();
     }
     this.addresses.add(addressesItem);
     return this;

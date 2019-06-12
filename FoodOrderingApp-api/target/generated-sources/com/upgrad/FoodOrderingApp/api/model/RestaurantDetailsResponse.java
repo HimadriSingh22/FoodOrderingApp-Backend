@@ -20,7 +20,7 @@ import javax.validation.constraints.*;
  */
 @ApiModel(description = "Restaurant details")
 @Validated
-@javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2019-06-08T18:13:39.214+05:30")
+@javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2019-06-11T20:39:46.508+05:30")
 
 public class RestaurantDetailsResponse   {
   @JsonProperty("id")
@@ -198,7 +198,7 @@ public class RestaurantDetailsResponse   {
 
   public RestaurantDetailsResponse addCategoriesItem(CategoryList categoriesItem) {
     if (this.categories == null) {
-      this.categories = new ArrayList<>();
+      this.categories = new ArrayList<CategoryList>();
     }
     this.categories.add(categoriesItem);
     return this;

@@ -13,11 +13,12 @@ public class CustomerAddressEntity implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
- @Column(name="customer_id")
+
+ @JoinColumn(name="customer_id")
     @NotNull
     private Integer customer_id;
 
- @Column(name="address_id")
+ @JoinColumn(name="address_id")
     @NotNull
     private Integer address_id;
 

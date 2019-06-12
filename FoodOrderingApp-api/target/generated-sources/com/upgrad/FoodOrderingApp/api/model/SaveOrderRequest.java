@@ -18,7 +18,7 @@ import javax.validation.constraints.*;
  * SaveOrderRequest
  */
 @Validated
-@javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2019-06-08T18:13:40.211+05:30")
+@javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2019-06-11T20:39:47.338+05:30")
 
 public class SaveOrderRequest   {
   @JsonProperty("address_id")
@@ -179,7 +179,7 @@ public class SaveOrderRequest   {
 
   public SaveOrderRequest addItemQuantitiesItem(ItemQuantity itemQuantitiesItem) {
     if (this.itemQuantities == null) {
-      this.itemQuantities = new ArrayList<>();
+      this.itemQuantities = new ArrayList<ItemQuantity>();
     }
     this.itemQuantities.add(itemQuantitiesItem);
     return this;

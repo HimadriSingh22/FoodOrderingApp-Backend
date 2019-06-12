@@ -50,7 +50,7 @@ public class CustomerController {
         String[] decodedArray = decodedText.split(":");
         CustomerAuthEntity customerAuthEntity = customerBusinessService.authenticate(decodedArray[0],decodedArray[1]);
         CustomerEntity customer = customerAuthEntity.getCustomer();
-        LoginResponse loginResponse = new LoginResponse().id(customer.getUuid()).contactNumber(customer.getContact_no())
+        LoginResponse loginResponse = new LoginResponse().id(customer.getUuid()).contactNumber(customer.getContact_number())
                 .firstName(customer.getFirstname()).lastName(customer.getLastname()).emailAddress(customer.getEmail()).message("LOGGED IN SUCCESSFULLY");
 
         HttpHeaders headers = new HttpHeaders();
