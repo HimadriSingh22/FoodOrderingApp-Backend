@@ -3,6 +3,7 @@ package com.upgrad.FoodOrderingApp.service.businness;
 import com.upgrad.FoodOrderingApp.service.dao.AddressDao;
 import com.upgrad.FoodOrderingApp.service.dao.CustomerDao;
 import com.upgrad.FoodOrderingApp.service.entity.AddressEntity;
+import com.upgrad.FoodOrderingApp.service.entity.CustomerAddressEntity;
 import com.upgrad.FoodOrderingApp.service.entity.CustomerAuthEntity;
 import com.upgrad.FoodOrderingApp.service.entity.StateEntity;
 import com.upgrad.FoodOrderingApp.service.exception.AddressNotFoundException;
@@ -75,5 +76,29 @@ public class AddressBusinessService {
          p = pattern.matcher(pinCode).find();
         }
         return p;
+    }
+
+    public AddressEntity showAddressList(String accessToken)throws AuthorizationFailedException
+    {
+        CustomerAuthEntity customerAuthEntity = customerDao.getCustomerAuthToken(accessToken);
+        if(customerAuthEntity==null)
+        {
+            throw new AuthorizationFailedException("ATH-001","Customer is not logged in!");
+        }
+
+        final ZonedDateTime now = ZonedDateTime.now();
+        if(customerAuthEntity.getLogoutAt().isBefore(now))
+        {
+            throw new AuthorizationFailedException("ATH-002","Customer is logged out ! Login again to access this endpoint!");
+
+        }
+        if(customerAuthEntity.getExpiresAt().isBefore(now))
+        {
+            throw new AuthorizationFailedException("ATH-003","Your session is expired.Log in again to access this endpoint!");
+        }
+        else{
+            AddressEntity addressEntity = addressDao.getAllAddress(customerAuthEntity.getCustomer_id());
+            return addressEntity;
+        }
     }
 }

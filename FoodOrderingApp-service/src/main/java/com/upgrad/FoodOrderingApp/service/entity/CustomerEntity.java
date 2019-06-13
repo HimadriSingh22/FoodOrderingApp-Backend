@@ -84,7 +84,7 @@ public class CustomerEntity implements Serializable {
     }
 
     @Column(name="lastname")
-    @NotNull
+
 
     @Size(max=200)
     private String lastname;

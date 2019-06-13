@@ -6,6 +6,9 @@ import java.io.Serializable;
 
 @Entity
 @Table(name="customer_address" , schema="restaurantdb")
+@NamedQueries({
+        @NamedQuery(name = "getAddressByCustomer_id",query="Select ad from CustomerAddressEntity ad where ad.customer_id= :customer_id")
+})
 public class CustomerAddressEntity implements Serializable {
 
  @Id
@@ -16,11 +19,11 @@ public class CustomerAddressEntity implements Serializable {
 
  @JoinColumn(name="customer_id")
     @NotNull
-    private Integer customer_id;
+    private String customer_id;
 
  @JoinColumn(name="address_id")
     @NotNull
-    private Integer address_id;
+    private String address_id;
 
     public Integer getId() {
         return id;
@@ -30,19 +33,19 @@ public class CustomerAddressEntity implements Serializable {
         this.id = id;
     }
 
-    public Integer getCustomer_id() {
+    public String getCustomer_id() {
         return customer_id;
     }
 
-    public void setCustomer_id(Integer customer_id) {
+    public void setCustomer_id(String customer_id) {
         this.customer_id = customer_id;
     }
 
-    public Integer getAddress_id() {
+    public String getAddress_id() {
         return address_id;
     }
 
-    public void setAddress_id(Integer address_id) {
+    public void setAddress_id(String address_id) {
         this.address_id = address_id;
     }
 }

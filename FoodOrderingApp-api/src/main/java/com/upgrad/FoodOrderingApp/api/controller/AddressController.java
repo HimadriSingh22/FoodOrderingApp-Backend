@@ -1,5 +1,7 @@
 package com.upgrad.FoodOrderingApp.api.controller;
 
+import com.upgrad.FoodOrderingApp.api.model.AddressList;
+import com.upgrad.FoodOrderingApp.api.model.AddressListResponse;
 import com.upgrad.FoodOrderingApp.api.model.SaveAddressRequest;
 import com.upgrad.FoodOrderingApp.api.model.SaveAddressResponse;
 import com.upgrad.FoodOrderingApp.service.businness.AddressBusinessService;
@@ -41,4 +43,12 @@ public class AddressController
 
        }
 
+       @RequestMapping(method=RequestMethod.GET,path="/address/customer",consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity<AddressListResponse> showAddressList(
+            @RequestHeader("authorization")final String authorization)throws AuthorizationFailedException
+       {
+           AddressEntity addressEntity = addressBusinessService.showAddressList(authorization);
+           AddressListResponse addressListResponse=new AddressListResponse();
+           return new ResponseEntity<AddressListResponse>(addressListResponse,HttpStatus.OK);
+       }
 }
