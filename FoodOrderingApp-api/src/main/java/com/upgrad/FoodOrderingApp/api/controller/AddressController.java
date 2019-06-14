@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+@CrossOrigin
 @RestController
 @RequestMapping("/")
 public class AddressController
@@ -40,7 +41,7 @@ public class AddressController
 
        }
 
-       @RequestMapping(method=RequestMethod.GET,path="/address/customer",consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
+       @RequestMapping(method=RequestMethod.GET,path="/address/customer")
     public ResponseEntity<List<AddressListResponse>>showAddressList(
             @RequestHeader("authorization")final String authorization)throws AuthorizationFailedException
        {
