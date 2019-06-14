@@ -19,11 +19,11 @@ public class CustomerAddressEntity implements Serializable {
 
  @JoinColumn(name="customer_id")
     @NotNull
-    private String customer_id;
+    private CustomerEntity customer_id;
 
  @JoinColumn(name="address_id")
     @NotNull
-    private String address_id;
+    private AddressEntity address_id;
 
     public Integer getId() {
         return id;
@@ -33,19 +33,19 @@ public class CustomerAddressEntity implements Serializable {
         this.id = id;
     }
 
-    public String getCustomer_id() {
+    public CustomerEntity getCustomer_id() {
         return customer_id;
     }
 
-    public void setCustomer_id(String customer_id) {
+    public void setCustomer_id(CustomerEntity customer_id) {
         this.customer_id = customer_id;
     }
 
-    public String getAddress_id() {
+    public AddressEntity getAddress_id() {
         return address_id;
     }
 
-    public void setAddress_id(String address_id) {
+    public void setAddress_id(AddressEntity address_id) {
         this.address_id = address_id;
     }
 }

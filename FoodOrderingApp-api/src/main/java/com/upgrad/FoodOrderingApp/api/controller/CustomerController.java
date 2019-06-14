@@ -49,7 +49,7 @@ public class CustomerController {
         String decodedText = new String(decode);
         String[] decodedArray = decodedText.split(":");
         CustomerAuthEntity customerAuthEntity = customerBusinessService.authenticate(decodedArray[0],decodedArray[1]);
-        CustomerEntity customer = customerAuthEntity.getCustomer();
+        CustomerEntity customer = customerAuthEntity.getCustomer_id();
         LoginResponse loginResponse = new LoginResponse().id(customer.getUuid()).contactNumber(customer.getContact_number())
                 .firstName(customer.getFirstname()).lastName(customer.getLastname()).emailAddress(customer.getEmail()).message("LOGGED IN SUCCESSFULLY");
 
@@ -64,7 +64,7 @@ public class CustomerController {
     public ResponseEntity<LogoutResponse> logout(@RequestHeader("authorization")final String authorization)throws AuthorizationFailedException
     {
         CustomerAuthEntity customerAuthEntity = customerBusinessService.logout(authorization);
-        CustomerEntity customer = customerAuthEntity.getCustomer();
+        CustomerEntity customer = customerAuthEntity.getCustomer_id();
         LogoutResponse logoutResponse = new LogoutResponse().id(customer.getUuid()).message("LOGGED OUT SUCCESSFULLY");
         return new ResponseEntity<LogoutResponse>(logoutResponse,HttpStatus.OK);
     }

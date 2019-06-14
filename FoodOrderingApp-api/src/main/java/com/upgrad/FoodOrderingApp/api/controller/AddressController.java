@@ -1,9 +1,6 @@
 package com.upgrad.FoodOrderingApp.api.controller;
 
-import com.upgrad.FoodOrderingApp.api.model.AddressList;
-import com.upgrad.FoodOrderingApp.api.model.AddressListResponse;
-import com.upgrad.FoodOrderingApp.api.model.SaveAddressRequest;
-import com.upgrad.FoodOrderingApp.api.model.SaveAddressResponse;
+import com.upgrad.FoodOrderingApp.api.model.*;
 import com.upgrad.FoodOrderingApp.service.businness.AddressBusinessService;
 import com.upgrad.FoodOrderingApp.service.entity.AddressEntity;
 import com.upgrad.FoodOrderingApp.service.exception.AddressNotFoundException;
@@ -13,12 +10,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.awt.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/")
@@ -38,17 +35,50 @@ public class AddressController
            addressEntity.setState_id(saveAddressRequest.getStateUuid());
            addressEntity.setActive("1");
            final AddressEntity savedAddress = addressBusinessService.saveAddress(authorization,addressEntity);
-           SaveAddressResponse saveAddressResponse = new SaveAddressResponse().id(savedAddress.getUuid()).status("ADDRESS  SUCCESSFULLY REGISTERED!!");
+           SaveAddressResponse saveAddressResponse = new SaveAddressResponse().id(savedAddress.getUuid().toString()).status("ADDRESS  SUCCESSFULLY REGISTERED!!");
            return new ResponseEntity<SaveAddressResponse>(saveAddressResponse,HttpStatus.OK);
 
        }
 
        @RequestMapping(method=RequestMethod.GET,path="/address/customer",consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public ResponseEntity<AddressListResponse> showAddressList(
+    public ResponseEntity<List<AddressListResponse>>showAddressList(
             @RequestHeader("authorization")final String authorization)throws AuthorizationFailedException
        {
-           AddressEntity addressEntity = addressBusinessService.showAddressList(authorization);
-           AddressListResponse addressListResponse=new AddressListResponse();
-           return new ResponseEntity<AddressListResponse>(addressListResponse,HttpStatus.OK);
+           List<AddressList> allAddresses = addressBusinessService.showAddressList(authorization);
+           List<AddressListResponse> addressListResponseList = new ArrayList<AddressListResponse>();
+           for (int i=0;i<allAddresses.size();i++)
+           {
+               AddressListResponse addressListResponse = new AddressListResponse()
+                       .addAddressesItem(allAddresses.get(i).id(allAddresses.get(i).getId()).flatBuildingName(allAddresses.get(i).getFlatBuildingName())
+                               .city(allAddresses.get(i).getCity()).locality(allAddresses.get(i).getLocality()).pincode(allAddresses.get(i).getPincode()
+                               ).state(allAddresses.get(i).getState()));
+                       addressListResponseList.add(addressListResponse);
+           }
+
+           return new ResponseEntity<List<AddressListResponse>>(addressListResponseList,HttpStatus.OK);
        }
+
+       @RequestMapping(method = RequestMethod.DELETE,path="/address/{address_id}",consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity<DeleteAddressResponse> deleteSavedAddress(@RequestHeader("authorization")final String authorization, @PathVariable("address_id") final String addressUuid)throws AuthorizationFailedException,AddressNotFoundException
+       {
+           AddressEntity addressEntity = addressBusinessService.deleteAddress(addressUuid,authorization);
+           DeleteAddressResponse deleteAddressResponse=new DeleteAddressResponse().id(UUID.fromString(addressEntity.getUuid().toString())).status("ADDRESS DELETED SUCCESSFULLY");
+           return new ResponseEntity<DeleteAddressResponse>(deleteAddressResponse,HttpStatus.OK);
+       }
+
+       @RequestMapping(method = RequestMethod.GET,path = "/states",consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity<List<StatesListResponse>> showStateList()
+       {
+           List<StatesList> statesLists = addressBusinessService.showStateList();
+           List<StatesListResponse> statesListResponseList = new ArrayList<StatesListResponse>();
+           for(int i=0;i<statesLists.size();i++)
+           {
+               StatesListResponse statesListResponse = new StatesListResponse().addStatesItem(statesLists.get(i).id(statesLists.get(i).getId()).stateName(statesLists.get(i).getStateName()));
+               statesListResponseList.add(statesListResponse);
+           }
+           return new ResponseEntity<List<StatesListResponse>>(statesListResponseList,HttpStatus.OK);
+
+       }
+
+
 }

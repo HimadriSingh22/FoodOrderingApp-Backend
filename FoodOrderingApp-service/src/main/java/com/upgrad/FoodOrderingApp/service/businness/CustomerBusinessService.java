@@ -128,7 +128,7 @@ public class CustomerBusinessService {
         {
             JwtTokenProvider jwtTokenProvider = new JwtTokenProvider(encryptedPassword);
             CustomerAuthEntity customerAuthEntity = new CustomerAuthEntity();
-            customerAuthEntity.setCustomer(customerEntity);
+            customerAuthEntity.setCustomer_id(customerEntity);
 
             final ZonedDateTime now = ZonedDateTime.now();
             final ZonedDateTime expiresAt=now.plusHours(8);

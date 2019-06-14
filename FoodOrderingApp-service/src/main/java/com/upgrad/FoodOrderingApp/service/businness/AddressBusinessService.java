@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.ZonedDateTime;
+import java.util.List;
 import java.util.regex.Pattern;
 
 @Service
@@ -56,7 +57,7 @@ public class AddressBusinessService {
                 throw new SaveAddressException("SAR-002","Invalid Pincode!!");
             }
             //checking the state_id
-            StateEntity stateEntity = addressDao.checkState(addressEntity.getState_id());
+            StateEntity stateEntity = addressDao.checkState(addressEntity.getState_id().toString());
             if(stateEntity==null)
             {
                 throw new AddressNotFoundException("ANF-002","No state by this id!");
@@ -78,7 +79,8 @@ public class AddressBusinessService {
         return p;
     }
 
-    public AddressEntity showAddressList(String accessToken)throws AuthorizationFailedException
+    @Transactional(propagation = Propagation.REQUIRED)
+    public List showAddressList(String accessToken)throws AuthorizationFailedException
     {
         CustomerAuthEntity customerAuthEntity = customerDao.getCustomerAuthToken(accessToken);
         if(customerAuthEntity==null)
@@ -97,8 +99,48 @@ public class AddressBusinessService {
             throw new AuthorizationFailedException("ATH-003","Your session is expired.Log in again to access this endpoint!");
         }
         else{
-            AddressEntity addressEntity = addressDao.getAllAddress(customerAuthEntity.getCustomer_id());
-            return addressEntity;
+            List allAddressesList = addressDao.getAllAddress(customerAuthEntity.getCustomer_id().toString());
+            return allAddressesList;
         }
     }
+
+    public AddressEntity deleteAddress(String address_uuid,String accessToken)throws AuthorizationFailedException,AddressNotFoundException
+    {
+        CustomerAuthEntity customerAuthEntity = customerDao.getCustomerAuthToken(accessToken);
+        if(customerAuthEntity==null)
+        {
+            throw new AuthorizationFailedException("ATHR-001","Customer is not logged in!");
+        }
+
+        final ZonedDateTime now = ZonedDateTime.now();
+        if(customerAuthEntity.getLogoutAt().isBefore(now))
+        {
+            throw new AuthorizationFailedException("ATHR-002","Customer is logged out ! Login again to access this endpoint!");
+
+        }
+        if(customerAuthEntity.getExpiresAt().isBefore(now))
+        {
+            throw new AuthorizationFailedException("ATHR-003","Your session is expired.Log in again to access this endpoint!");
+        }
+
+        CustomerAddressEntity customerAddress = addressDao.matchAddressId(address_uuid);
+        if(customerAuthEntity.getCustomer_id().equals(customerAddress.getCustomer_id())==false){
+           throw new AuthorizationFailedException("ATHR-004","You are not authorized to view/update/delete any one else's address");
+        }
+        if(address_uuid==null)
+        {
+            throw new AddressNotFoundException("ANF-005","Address can't be empty!!");
+        }
+
+        return addressDao.deleteAddress(address_uuid);
+
+
+    }
+
+    @Transactional(propagation = Propagation.REQUIRED)
+    public List showStateList()
+    {
+        return addressDao.getAllStates();
+    }
+
 }

@@ -1,11 +1,13 @@
 package com.upgrad.FoodOrderingApp.service.dao;
 
 import com.upgrad.FoodOrderingApp.service.entity.*;
+import com.upgrad.FoodOrderingApp.service.exception.AddressNotFoundException;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
+import java.util.List;
 
 @Repository
 
@@ -30,10 +32,46 @@ public class AddressDao {
 
     }
 
-    public AddressEntity getAllAddress(final String customer_id)
+    public List<AddressEntity>getAllAddress(final String customer_id)
     {
-        CustomerAddressEntity customerAddressEntity= entityManager.createNamedQuery("getAddressByCustomerId",CustomerAddressEntity.class).setParameter("customer_id",customer_id).getSingleResult();
-        AddressEntity addressEntity = entityManager.createNamedQuery("getAllAddressByAddressId",AddressEntity.class).setParameter("address_id",customerAddressEntity).getSingleResult();
-        return addressEntity;
+        List<CustomerAddressEntity> result = entityManager.createNamedQuery("getAddressByCustomerId",CustomerAddressEntity.class).setParameter("customer_id",customer_id).getResultList();
+        List<AddressEntity> resultList = entityManager.createNamedQuery("getAllAddressByAddressId",AddressEntity.class).setParameter("address_id",result).getResultList();
+        return resultList;
+    }
+
+    public CustomerAddressEntity matchAddressId(String address_uuid)throws AddressNotFoundException
+    {
+        try{
+            AddressEntity addressEntity =entityManager.createNamedQuery("getIdbyAddressUuid",AddressEntity.class).setParameter("address_uuid",address_uuid).getSingleResult();
+           if(addressEntity.getId()==null)
+           {
+               throw new AddressNotFoundException("ANF-003","No address by this id");
+           }
+
+           else{
+
+            return entityManager.createNamedQuery("selectCustomerByAddressId",CustomerAddressEntity.class).setParameter("address_id",addressEntity.getId()).getSingleResult();
+           }
+        }catch (NoResultException no)
+        {
+            return null;
+        }
+    }
+
+    public AddressEntity deleteAddress(final String address_uuid)
+    {
+        try{
+           return entityManager.createNamedQuery("deleteAddressById",AddressEntity.class).setParameter("address_uuid",address_uuid).getSingleResult();
+        }
+        catch (NoResultException no)
+        {
+            return null;
+        }
+    }
+
+    public List<StateEntity> getAllStates()
+    {
+        List<StateEntity> resultList = entityManager.createNamedQuery("getAllStates",StateEntity.class).getResultList();
+        return resultList;
     }
 }

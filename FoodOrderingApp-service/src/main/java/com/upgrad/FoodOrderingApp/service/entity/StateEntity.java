@@ -6,7 +6,8 @@ import java.io.Serializable;
 
 @Entity
 @Table(name="state",schema="restaurantdb")
-@NamedQueries({@NamedQuery(name = "getStateByUuid",query="select st from StateEntity st where st.state_uuid= :state_uuid")})
+@NamedQueries({@NamedQuery(name = "getStateByUuid",query="select st from StateEntity st where st.state_uuid= :state_uuid"),
+@NamedQuery(name = "getAllStates",query = "select st from StateEntity st")})
 public class StateEntity implements Serializable {
 
     @Id

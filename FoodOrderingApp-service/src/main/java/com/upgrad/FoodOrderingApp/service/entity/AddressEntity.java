@@ -7,7 +7,9 @@ import java.io.Serializable;
 @Entity
 @Table(name="address", schema="restaurantdb")
 @NamedQueries({
-@NamedQuery(name = "getAllAddressByAddressId",query="select ad from AddressEntity ad where ad.address_id= :id")
+@NamedQuery(name = "getAllAddressByAddressId",query="select ad from AddressEntity ad where ad.id= :address_id"),
+        @NamedQuery(name = "deleteAddressById",query = "delete from AddressEntity ad where ad.uuid =:address_uuid"),
+        @NamedQuery(name = "getIdByAddressUuid",query = "select ad from AddressEntity ad  where ad.uuid= :address_uuid")
 })
 
 public class AddressEntity implements Serializable {
@@ -19,7 +21,7 @@ public class AddressEntity implements Serializable {
 
     @Column(name="uuid")
     @NotNull
-    private String uuid;
+    private AddressEntity uuid;
 
     @Column(name="flat_buil_number")
     @NotNull
@@ -53,11 +55,11 @@ public class AddressEntity implements Serializable {
         this.id = id;
     }
 
-    public String getUuid() {
+    public AddressEntity getUuid() {
         return uuid;
     }
 
-    public void setUuid(String uuid) {
+    public void setUuid(AddressEntity uuid) {
         this.uuid = uuid;
     }
 

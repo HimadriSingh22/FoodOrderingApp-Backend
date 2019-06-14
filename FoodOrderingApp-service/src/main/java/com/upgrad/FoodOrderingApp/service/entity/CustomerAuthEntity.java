@@ -25,7 +25,7 @@ public class CustomerAuthEntity {
 
 
     @JoinColumn(name="customer_id")
-    private String customer_id;
+    private CustomerEntity customer_id;
 
     @Column(name="access_token")
     @NotNull
@@ -60,11 +60,11 @@ public class CustomerAuthEntity {
         this.uuid = uuid;
     }
 
-    public String getCustomer_id() {
+    public CustomerEntity getCustomer_id() {
         return customer_id;
     }
 
-    public void setCustomer_id(String customer_id) {
+    public void setCustomer_id(CustomerEntity customer_id) {
         this.customer_id = customer_id;
     }
 
