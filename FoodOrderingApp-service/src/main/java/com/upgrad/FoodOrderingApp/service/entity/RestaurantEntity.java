@@ -2,11 +2,16 @@ package com.upgrad.FoodOrderingApp.service.entity;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.io.Serializable;
+import java.math.BigDecimal;
 
 @Entity
 @Table(name = "restaurant",schema = "restaurantdb")
-@NamedQueries({@NamedQuery(name = "getAllRestaurants",query = "Select rt from RestaurantEntity rt order by rt.customer_rating DESC ")})
-public class RestaurantEntity {
+@NamedQueries({@NamedQuery(name = "getAllRestaurants",query = "Select rt from RestaurantEntity rt order by rt.customer_rating DESC "),
+@NamedQuery(name = "getrestaurantByName",query="select rt from RestaurantEntity rt where rt.restaurant_name LIKE '%:restaurant_name%'"),
+@NamedQuery(name = "getRestaurantById",query = "select rt from RestaurantEntity rt where rt.restaurant_id = :restaurant_id"),
+@NamedQuery(name = "getRestaurantByUuid",query="select rt from RestaurantEntity rt where rt.restaurant_uuid= :restaurant_uuid")})
+public class RestaurantEntity implements Serializable {
     @Id
     @Column(name="id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -26,7 +31,7 @@ public class RestaurantEntity {
 
     @Column(name = "customer_rating")
     @NotNull
-    private Number customer_rating;
+    private BigDecimal customer_rating;
 
     @Column(name="average_price_for_two")
     @NotNull
@@ -68,11 +73,11 @@ public class RestaurantEntity {
         this.restaurant_photo_url = restaurant_photo_url;
     }
 
-    public Number getCustomer_rating() {
+    public BigDecimal getCustomer_rating() {
         return customer_rating;
     }
 
-    public void setCustomer_rating(Number customer_rating) {
+    public void setCustomer_rating(BigDecimal customer_rating) {
         this.customer_rating = customer_rating;
     }
 
