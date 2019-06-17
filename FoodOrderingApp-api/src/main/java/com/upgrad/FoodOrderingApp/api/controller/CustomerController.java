@@ -43,7 +43,7 @@ public class CustomerController {
     }
 
     //login Request
-    @RequestMapping(method = RequestMethod.POST,path="/customer/login",produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @RequestMapping(method = RequestMethod.POST,path="/customer/login",consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<LoginResponse> login(@RequestHeader("authorization") final String authorization) throws AuthenticationFailedException {
         byte[] decode =Base64.getDecoder().decode(authorization.split("Basic")[1]);
         String decodedText = new String(decode);
@@ -63,7 +63,8 @@ public class CustomerController {
     @RequestMapping(method=RequestMethod.POST,path="/customer/logout",produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<LogoutResponse> logout(@RequestHeader("authorization")final String authorization)throws AuthorizationFailedException
     {
-        CustomerAuthEntity customerAuthEntity = customerBusinessService.logout(authorization);
+        String accessToken = authorization.split("Bearer ")[1];
+        CustomerAuthEntity customerAuthEntity = customerBusinessService.logout(accessToken);
         CustomerEntity customer = customerAuthEntity.getCustomer_id();
         LogoutResponse logoutResponse = new LogoutResponse().id(customer.getUuid()).message("LOGGED OUT SUCCESSFULLY");
         return new ResponseEntity<LogoutResponse>(logoutResponse,HttpStatus.OK);
@@ -83,7 +84,8 @@ public class CustomerController {
         updateCustomer.setFirstname(updateCustomerRequest.getFirstName());
         updateCustomer.setLastname(updateCustomerRequest.getLastName());
 
-         final CustomerEntity updatedCustomerEntity = customerBusinessService.updateCustomer(authorization,updateCustomer);
+        String accessToken = authorization.split("Bearer ")[1];
+         final CustomerEntity updatedCustomerEntity = customerBusinessService.updateCustomer(accessToken,updateCustomer);
         UpdateCustomerResponse updateCustomerResponse=new UpdateCustomerResponse().id(updatedCustomerEntity.getUuid()).firstName(updatedCustomerEntity.getFirstname())
                 .lastName(updatedCustomerEntity.getLastname()).status("CUSTOMER DETAILS UPDATED SUCCESSFULLY");
         return new ResponseEntity<UpdateCustomerResponse>(updateCustomerResponse,HttpStatus.OK);
@@ -100,9 +102,9 @@ public class CustomerController {
             throw new UpdateCustomerException("UCR-003","No field should be empty!!");
         }
 
-
+        String accessToken = authorization.split("Bearer ")[1];
         updateOldPassword.setPassword(updatePasswordRequest.getNewPassword());
-        final CustomerEntity updatedCustomerEntity = customerBusinessService.updatePassword(authorization,updateOldPassword,updatePasswordRequest.getOldPassword());
+        final CustomerEntity updatedCustomerEntity = customerBusinessService.updatePassword(accessToken,updateOldPassword,updatePasswordRequest.getOldPassword());
 
         UpdatePasswordResponse updatePasswordResponse=new UpdatePasswordResponse().id(updatedCustomerEntity.getUuid()).status("CUSTOMER PASSWORD UPDATED SUCCESSFULLY!");
         return new ResponseEntity<UpdatePasswordResponse>(updatePasswordResponse,HttpStatus.OK);
