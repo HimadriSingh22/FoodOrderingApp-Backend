@@ -1,5 +1,7 @@
 package com.upgrad.FoodOrderingApp.service.entity;
 
+import com.upgrad.FoodOrderingApp.service.common.ItemType;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
@@ -8,7 +10,9 @@ import java.util.UUID;
 @Entity
 @Table(name = "item",schema="restaurantdb")
 @NamedQueries({
-        @NamedQuery(name = "getAllItems",query = "select it from ItemEntity it where it.item_id =:item_id")
+        @NamedQuery(name = "getAllItems",query = "select it from ItemEntity it where it.item_id =:item_id"),
+        @NamedQuery(name = "getItemDetailsByItemId",query = "select it from ItemEntity it where it.item_id =:item_id"),
+        @NamedQuery(name="getItemByUuid",query="select it from ItemEntity it where it.uuid =:item_uuid")
 })
 public class ItemEntity implements Serializable {
 
@@ -31,7 +35,7 @@ public class ItemEntity implements Serializable {
 
     @Column(name = "type")
     @NotNull
-    private String type;
+    private ItemType type;
 
     public Integer getItem_id() {
         return item_id;
@@ -65,11 +69,11 @@ public class ItemEntity implements Serializable {
         this.price = price;
     }
 
-    public String getType() {
+    public ItemType getType() {
         return type;
     }
 
-    public void setType(String type) {
+    public void setType(ItemType type) {
         this.type = type;
     }
 }

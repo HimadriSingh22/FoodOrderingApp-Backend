@@ -112,4 +112,5 @@ public class RestaurantDao {
       return entityManager.merge(restaurantEntity);
    }
 
+
 }
