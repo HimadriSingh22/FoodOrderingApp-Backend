@@ -8,7 +8,7 @@ import java.io.Serializable;
 @Entity
 @Table(name = "category",schema = "restaurantdb")
 @NamedQueries({
-        @NamedQuery(name = "getAllCategories",query = "select ct from CategoryEntity ct "),
+        @NamedQuery(name = "getAllCategories",query = "select ct from CategoryEntity ct order by ct.category_name ASC "),
         @NamedQuery(name = "getCategoryByUuid",query = "select ct from CategoryEntity ct where ct.category_uuid = :category_uuid"),
         @NamedQuery(name = "getAllCategoryDetails",query = "select ct from CategoryEntity ct where ct.id =:category_id")
 })

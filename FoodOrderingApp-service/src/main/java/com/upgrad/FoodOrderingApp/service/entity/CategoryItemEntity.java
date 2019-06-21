@@ -6,7 +6,9 @@ import java.io.Serializable;
 
 @Entity
 @Table(name = "category_item",schema = "restaurantdb")
-
+@NamedQueries({
+        @NamedQuery(name = "getCategoryItemList",query = "select ct from CategoryItemEntity ct where ct.category_id = :category_id")
+})
 public class CategoryItemEntity implements Serializable {
 
     @Id

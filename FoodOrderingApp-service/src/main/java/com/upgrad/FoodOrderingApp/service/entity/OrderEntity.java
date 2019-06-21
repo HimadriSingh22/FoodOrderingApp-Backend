@@ -9,7 +9,9 @@ import java.time.ZonedDateTime;
 
 @Entity
 @Table(name = "orders",schema = "restaurantdb")
-@NamedQueries({@NamedQuery(name = "getOrderIdByRestaurantId",query = "select or from OrderEntity or where or.restaurant_id =:restaurant_id")})
+@NamedQueries({
+        @NamedQuery(name = "getOrderIdByRestaurantId",query = "select od from OrderEntity od where od.restaurant_id= :restaurant_id")
+})
 public class OrderEntity implements Serializable {
 
     @Id
@@ -41,19 +43,21 @@ public class OrderEntity implements Serializable {
     @NotNull
     private Integer payment_id;
 
-
-
     @JoinColumn(name="customer_id")
     @NotNull
     private Integer customer_id;
+
+    @JoinColumn(name="address_id")
+    @NotNull
+    private Integer address_id;
+
 
     @JoinColumn(name="restaurant_id")
     @NotNull
     private Integer restaurant_id;
 
-    @JoinColumn(name="address_id")
-    @NotNull
-    private Integer address_id;
+
+
 
     public Integer getOrder_id() {
         return order_id;

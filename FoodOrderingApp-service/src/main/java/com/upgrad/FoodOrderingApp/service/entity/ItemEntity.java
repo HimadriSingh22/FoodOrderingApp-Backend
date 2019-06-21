@@ -10,9 +10,9 @@ import java.util.UUID;
 @Entity
 @Table(name = "item",schema="restaurantdb")
 @NamedQueries({
-        @NamedQuery(name = "getAllItems",query = "select it from ItemEntity it where it.item_id =:item_id"),
-        @NamedQuery(name = "getItemDetailsByItemId",query = "select it from ItemEntity it where it.item_id =:item_id"),
-        @NamedQuery(name="getItemByUuid",query="select it from ItemEntity it where it.uuid =:item_uuid")
+        @NamedQuery(name = "getAllItems",query = "select it from ItemEntity it where it.item_id = :item_id"),
+        @NamedQuery(name = "getItemDetailsByItemId",query = "select it from ItemEntity it where it.item_id = :item_id"),
+        @NamedQuery(name="getItemByUuid",query="select it from ItemEntity it where it.item_uuid = :uuid")
 })
 public class ItemEntity implements Serializable {
 
