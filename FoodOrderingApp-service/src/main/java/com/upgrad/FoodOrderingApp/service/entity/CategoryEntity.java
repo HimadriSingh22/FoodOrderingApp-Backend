@@ -29,6 +29,11 @@ public class CategoryEntity implements Serializable {
     @Size(max = 255)
     private String category_name;
 
+    public CategoryEntity(@NotNull @Size(max = 200) String category_uuid, @NotNull @Size(max = 255) String category_name) {
+        this.category_uuid = category_uuid;
+        this.category_name = category_name;
+    }
+
     public Integer getId() {
         return id;
     }

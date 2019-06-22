@@ -23,6 +23,11 @@ public class StateEntity implements Serializable {
     @NotNull
     private String state_name;
 
+    public StateEntity(@NotNull String state_uuid, @NotNull String state_name) {
+        this.state_uuid = state_uuid;
+        this.state_name = state_name;
+    }
+
     public Integer getId() {
         return id;
     }

@@ -2,16 +2,17 @@ package com.upgrad.FoodOrderingApp.service.entity;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.io.Serializable;
 
 @Entity
 @Table(name = "payment",schema = "restaurantdb")
 
-public class PaymentEntity {
+public class PaymentEntity implements Serializable {
 
     @Id
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer payment_id;
+    private Integer id;
 
     @Column(name="uuid")
     @NotNull
@@ -21,20 +22,17 @@ public class PaymentEntity {
     @NotNull
     private String payment_name;
 
-    public String getPayment_name() {
-        return payment_name;
-    }
-
-    public void setPayment_name(String payment_name) {
+    public PaymentEntity(@NotNull String payment_uuid, @NotNull String payment_name) {
+        this.payment_uuid = payment_uuid;
         this.payment_name = payment_name;
     }
 
-    public Integer getPayment_id() {
-        return payment_id;
+    public Integer getId() {
+        return id;
     }
 
-    public void setPayment_id(Integer payment_id) {
-        this.payment_id = payment_id;
+    public void setId(Integer id) {
+        this.id = id;
     }
 
     public String getPayment_uuid() {
@@ -43,5 +41,13 @@ public class PaymentEntity {
 
     public void setPayment_uuid(String payment_uuid) {
         this.payment_uuid = payment_uuid;
+    }
+
+    public String getPayment_name() {
+        return payment_name;
+    }
+
+    public void setPayment_name(String payment_name) {
+        this.payment_name = payment_name;
     }
 }

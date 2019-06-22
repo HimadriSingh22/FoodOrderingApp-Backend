@@ -27,6 +27,39 @@ public class CustomerEntity implements Serializable {
     @Size(max=200)
     private String firstname;
 
+    @Column(name="lastname")
+
+
+    @Size(max=200)
+    private String lastname;
+
+    @Column(name="email")
+    @NotNull
+    private String email;
+
+    @Column(name="password")
+    @NotNull
+    private String password;
+
+    @Column(name="salt")
+    @NotNull
+    private String salt;
+
+    @Column(name="contact_number")
+    @NotNull
+    private String contact_number;
+
+    public CustomerEntity(){}
+    public CustomerEntity(@NotNull String uuid, @NotNull @Size(max = 200) String firstname, @Size(max = 200) String lastname, @NotNull String email, @NotNull String password, @NotNull String salt, @NotNull String contact_number) {
+        this.uuid = uuid;
+        this.firstname = firstname;
+        this.lastname = lastname;
+        this.email = email;
+        this.password = password;
+        this.salt = salt;
+        this.contact_number = contact_number;
+    }
+
     public Integer getId() {
         return id;
     }
@@ -83,23 +116,6 @@ public class CustomerEntity implements Serializable {
         this.salt = salt;
     }
 
-    @Column(name="lastname")
-
-
-    @Size(max=200)
-    private String lastname;
-
-    @Column(name="email")
-    @NotNull
-    private String email;
-
-    @Column(name="password")
-    @NotNull
-    private String password;
-
-    @Column(name="salt")
-    @NotNull
-    private String salt;
 
     public String getContact_number() {
         return contact_number;
@@ -109,9 +125,6 @@ public class CustomerEntity implements Serializable {
         this.contact_number = contact_number;
     }
 
-    @Column(name="contact_number")
 
-    @NotNull
-    private String contact_number;
 
 }

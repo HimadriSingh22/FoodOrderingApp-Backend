@@ -37,6 +37,13 @@ public class ItemEntity implements Serializable {
     @NotNull
     private ItemType type;
 
+    public ItemEntity(@NotNull String item_uuid, @NotNull String item_name, @NotNull Integer price, @NotNull ItemType type) {
+        this.item_uuid = item_uuid;
+        this.item_name = item_name;
+        this.price = price;
+        this.type = type;
+    }
+
     public Integer getItem_id() {
         return item_id;
     }

@@ -18,19 +18,26 @@ public class OrderItemEntity implements Serializable {
 
     @JoinColumn(name = "order_id")
     @NotNull
-    private Integer order_id;
+    private OrderEntity order_id;
 
     @JoinColumn(name = "item_id")
     @NotNull
-    private Integer item_id;
+    private ItemEntity item_id;
 
-    @JoinColumn(name = "quantity")
+    @Column(name = "quantity")
     @NotNull
     private Integer quantity;
 
-    @JoinColumn(name = "price")
+    @Column(name = "price")
     @NotNull
     private Integer price;
+
+    public OrderItemEntity(@NotNull OrderEntity order_id, @NotNull ItemEntity item_id, @NotNull Integer quantity, @NotNull Integer price) {
+        this.order_id = order_id;
+        this.item_id = item_id;
+        this.quantity = quantity;
+        this.price = price;
+    }
 
     public Integer getOrder_item_id() {
         return order_item_id;
@@ -40,19 +47,19 @@ public class OrderItemEntity implements Serializable {
         this.order_item_id = order_item_id;
     }
 
-    public Integer getOrder_id() {
+    public OrderEntity getOrder_id() {
         return order_id;
     }
 
-    public void setOrder_id(Integer order_id) {
+    public void setOrder_id(OrderEntity order_id) {
         this.order_id = order_id;
     }
 
-    public Integer getItem_id() {
+    public ItemEntity getItem_id() {
         return item_id;
     }
 
-    public void setItem_id(Integer item_id) {
+    public void setItem_id(ItemEntity item_id) {
         this.item_id = item_id;
     }
 

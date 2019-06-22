@@ -18,11 +18,16 @@ public class CategoryItemEntity implements Serializable {
 
     @JoinColumn(name = "item_id")
     @NotNull
-    private Integer item_id;
+    private ItemEntity item_id;
 
     @JoinColumn(name = "category_id")
     @NotNull
-    private Integer category_id;
+    private CategoryEntity category_id;
+
+    public CategoryItemEntity(@NotNull ItemEntity item_id, @NotNull CategoryEntity category_id) {
+        this.item_id = item_id;
+        this.category_id = category_id;
+    }
 
     public Integer getId() {
         return id;
@@ -32,19 +37,19 @@ public class CategoryItemEntity implements Serializable {
         this.id = id;
     }
 
-    public Integer getItem_id() {
+    public ItemEntity getItem_id() {
         return item_id;
     }
 
-    public void setItem_id(Integer item_id) {
+    public void setItem_id(ItemEntity item_id) {
         this.item_id = item_id;
     }
 
-    public Integer getCategory_id() {
+    public CategoryEntity getCategory_id() {
         return category_id;
     }
 
-    public void setCategory_id(Integer category_id) {
+    public void setCategory_id(CategoryEntity category_id) {
         this.category_id = category_id;
     }
 }

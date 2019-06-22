@@ -41,6 +41,20 @@ public class RestaurantEntity implements Serializable {
     @NotNull
     private Integer number_of_customers_rated;
 
+    @JoinColumn(name = "address_id")
+    @NotNull
+    private AddressEntity restaurant_address_id;
+
+    public RestaurantEntity(@NotNull String restaurant_uuid, @NotNull String restaurant_name, @NotNull String restaurant_photo_url, @NotNull Double customer_rating, @NotNull Integer avg_price_for_two, @NotNull Integer number_of_customers_rated, @NotNull AddressEntity restaurant_address_id) {
+        this.restaurant_uuid = restaurant_uuid;
+        this.restaurant_name = restaurant_name;
+        this.restaurant_photo_url = restaurant_photo_url;
+        this.customer_rating = customer_rating;
+        this.avg_price_for_two = avg_price_for_two;
+        this.number_of_customers_rated = number_of_customers_rated;
+        this.restaurant_address_id = restaurant_address_id;
+    }
+
     public Integer getRestaurant_id() {
         return restaurant_id;
     }
@@ -97,16 +111,13 @@ public class RestaurantEntity implements Serializable {
         this.number_of_customers_rated = number_of_customers_rated;
     }
 
-    public String getRestaurant_address_id() {
+    public AddressEntity getRestaurant_address_id() {
         return restaurant_address_id;
     }
 
-    public void setRestaurant_address_id(String restaurant_address_id) {
+    public void setRestaurant_address_id(AddressEntity restaurant_address_id) {
         this.restaurant_address_id = restaurant_address_id;
     }
 
-    @JoinColumn(name = "address_id")
-    @NotNull
 
-    private String restaurant_address_id;
 }

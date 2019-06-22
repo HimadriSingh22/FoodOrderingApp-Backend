@@ -44,6 +44,8 @@ public class CustomerAuthEntity {
     @NotNull
     private ZonedDateTime expiresAt;
 
+   
+
     public Integer getId() {
         return id;
     }

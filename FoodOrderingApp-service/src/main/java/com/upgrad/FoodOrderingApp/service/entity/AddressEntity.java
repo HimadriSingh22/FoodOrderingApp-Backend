@@ -21,7 +21,7 @@ public class AddressEntity implements Serializable {
 
     @Column(name="uuid")
     @NotNull
-    private AddressEntity uuid;
+    private String uuid;
 
     @Column(name="flat_buil_number")
     @NotNull
@@ -41,11 +41,23 @@ public class AddressEntity implements Serializable {
 
     @JoinColumn(name="state_id")
     @NotNull
-    private String state_id;
+    private StateEntity state_id;
 
     @Column(name="active")
     @NotNull
-    private String active;
+    private Integer active;
+
+
+    public AddressEntity(){}
+    public AddressEntity( String uuid,  String flat_buil_number,  String locality,  String city,  String pincode, StateEntity state_id,  String active) {
+        this.uuid = uuid;
+        this.flat_buil_number = flat_buil_number;
+        this.locality = locality;
+        this.city = city;
+        this.pincode = pincode;
+        this.state_id = state_id;
+        this.active = 1;
+    }
 
     public Integer getId() {
         return id;
@@ -55,11 +67,11 @@ public class AddressEntity implements Serializable {
         this.id = id;
     }
 
-    public AddressEntity getUuid() {
+    public String getUuid() {
         return uuid;
     }
 
-    public void setUuid(AddressEntity uuid) {
+    public void setUuid(String uuid) {
         this.uuid = uuid;
     }
 
@@ -95,19 +107,19 @@ public class AddressEntity implements Serializable {
         this.pincode = pincode;
     }
 
-    public String getState_id() {
+    public StateEntity getState_id() {
         return state_id;
     }
 
-    public void setState_id(String state_id) {
+    public void setState_id(StateEntity state_id) {
         this.state_id = state_id;
     }
 
-    public String getActive() {
+    public Integer getActive() {
         return active;
     }
 
-    public void setActive(String active) {
+    public void setActive(Integer active) {
         this.active = active;
     }
 }

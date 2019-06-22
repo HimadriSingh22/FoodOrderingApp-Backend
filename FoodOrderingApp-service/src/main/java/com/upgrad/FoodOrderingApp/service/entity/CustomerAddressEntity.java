@@ -25,6 +25,11 @@ public class CustomerAddressEntity implements Serializable {
     @NotNull
     private AddressEntity address_id;
 
+    public CustomerAddressEntity(@NotNull CustomerEntity customer_id, @NotNull AddressEntity address_id) {
+        this.customer_id = customer_id;
+        this.address_id = address_id;
+    }
+
     public Integer getId() {
         return id;
     }

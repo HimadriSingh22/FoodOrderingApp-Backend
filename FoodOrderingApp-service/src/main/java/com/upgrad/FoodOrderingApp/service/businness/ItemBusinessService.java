@@ -2,8 +2,11 @@ package com.upgrad.FoodOrderingApp.service.businness;
 
 import com.upgrad.FoodOrderingApp.service.dao.ItemDao;
 import com.upgrad.FoodOrderingApp.service.dao.OrderDao;
+import com.upgrad.FoodOrderingApp.service.dao.OrderItemDao;
 import com.upgrad.FoodOrderingApp.service.dao.RestaurantDao;
 import com.upgrad.FoodOrderingApp.service.entity.ItemEntity;
+import com.upgrad.FoodOrderingApp.service.entity.OrderEntity;
+import com.upgrad.FoodOrderingApp.service.entity.OrderItemEntity;
 import com.upgrad.FoodOrderingApp.service.entity.RestaurantEntity;
 import com.upgrad.FoodOrderingApp.service.exception.RestaurantNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +24,9 @@ public class ItemBusinessService {
 
     @Autowired
     private ItemDao itemDao;
+
+    @Autowired
+    private OrderItemDao orderItemDao;
 
     public List<ItemEntity> getItemsByPopularity(String restaurant_uuid)throws RestaurantNotFoundException
     {
@@ -48,6 +54,11 @@ public class ItemBusinessService {
         Collections.reverse(sortedItemEntityList);
 
         return sortedItemEntityList;
+    }
+
+    public List<OrderItemEntity> getItemsByOrder(OrderEntity orderEntity)
+    {
+        return orderItemDao.getItemsByOrder(orderEntity);
     }
 
 }

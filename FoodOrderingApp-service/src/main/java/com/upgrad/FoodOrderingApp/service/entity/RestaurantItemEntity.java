@@ -21,7 +21,12 @@ public class RestaurantItemEntity implements Serializable {
 
     @JoinColumn(name = "restaurant_id")
     @NotNull
-    private Integer restaurant_id;
+    private RestaurantEntity restaurant_id;
+
+    public RestaurantItemEntity(@NotNull Integer item_id, @NotNull RestaurantEntity restaurant_id) {
+        this.item_id = item_id;
+        this.restaurant_id = restaurant_id;
+    }
 
     public Integer getRestaurant_item_id() {
         return restaurant_item_id;
@@ -39,11 +44,11 @@ public class RestaurantItemEntity implements Serializable {
         this.item_id = item_id;
     }
 
-    public Integer getRestaurant_id() {
+    public RestaurantEntity getRestaurant_id() {
         return restaurant_id;
     }
 
-    public void setRestaurant_id(Integer restaurant_id) {
+    public void setRestaurant_id(RestaurantEntity restaurant_id) {
         this.restaurant_id = restaurant_id;
     }
 }
