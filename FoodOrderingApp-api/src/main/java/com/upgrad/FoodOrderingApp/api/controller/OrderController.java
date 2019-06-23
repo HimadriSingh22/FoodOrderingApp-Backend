@@ -1,13 +1,12 @@
 package com.upgrad.FoodOrderingApp.api.controller;
 
 import com.upgrad.FoodOrderingApp.api.model.*;
-import com.upgrad.FoodOrderingApp.service.businness.ItemBusinessService;
-import com.upgrad.FoodOrderingApp.service.businness.OrderBusinessService;
+import com.upgrad.FoodOrderingApp.service.businness.*;
 import com.upgrad.FoodOrderingApp.service.entity.CouponEntity;
+import com.upgrad.FoodOrderingApp.service.entity.CustomerEntity;
 import com.upgrad.FoodOrderingApp.service.entity.OrderEntity;
 import com.upgrad.FoodOrderingApp.service.entity.OrderItemEntity;
-import com.upgrad.FoodOrderingApp.service.exception.AuthorizationFailedException;
-import com.upgrad.FoodOrderingApp.service.exception.CouponNotFoundException;
+import com.upgrad.FoodOrderingApp.service.exception.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -15,6 +14,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.awt.*;
+import java.time.ZonedDateTime;
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -23,10 +24,19 @@ import java.util.UUID;
 @RequestMapping("/")
 public class OrderController {
 
+
     @Autowired
    private OrderBusinessService orderBusinessService;
     @Autowired
    private ItemBusinessService itemBusinessService;
+    @Autowired
+    private AddressBusinessService addressBusinessService;
+    @Autowired
+    private CustomerBusinessService customerBusinessService;
+    @Autowired
+    private RestaurantBusinessService restaurantBusinessService;
+    @Autowired
+    private PaymentBusinessService paymentBusinessService;
     @RequestMapping(method=RequestMethod.GET,path = "/order/coupon/{coupon_name}",produces = MediaType.APPLICATION_JSON_UTF8_VALUE,consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<CouponDetailsResponse> getCouponByName(@PathVariable("coupon_name")final String coupon_name,@RequestHeader("authorization")final String authorization)throws CouponNotFoundException,AuthorizationFailedException
     {
@@ -84,4 +94,32 @@ public class OrderController {
 
     }
 
-}
+    @RequestMapping(method = RequestMethod.POST,path="/order",consumes = MediaType.APPLICATION_JSON_UTF8_VALUE,produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity<SaveOrderResponse> saveOrder(@RequestHeader("authorization")final String authorization,@RequestBody(required = false)final SaveOrderRequest saveOrderRequest)throws ItemNotFoundException,PaymentMethodNotFoundException,RestaurantNotFoundException, AddressNotFoundException, AuthorizationFailedException,CouponNotFoundException
+    {
+        String accessToken = authorization.split("Bearer")[1];
+        CustomerEntity customerEntity = customerBusinessService.getCustomer(accessToken);
+        OrderEntity orderEntity = new OrderEntity();
+        orderEntity.setOrder_uuid(UUID.randomUUID().toString());
+        orderEntity.setCoupon_id(orderBusinessService.getCouponByUUID(saveOrderRequest.getCouponId().toString()));
+        orderEntity.setAddress_id(addressBusinessService.getAddressByUUID(saveOrderRequest.getAddressId(),customerEntity));
+        orderEntity.setRestaurant_id(restaurantBusinessService.getRestaurantByUuid(saveOrderRequest.getRestaurantId().toString()));
+        orderEntity.setCustomer_id(customerEntity);
+        orderEntity.setBill(saveOrderRequest.getBill());
+        orderEntity.setDiscount(saveOrderRequest.getDiscount());
+        orderEntity.setPayment_id(paymentBusinessService.getPaymentByUUID(saveOrderRequest.getPaymentId().toString()));
+        orderEntity.setDate(new Date());
+       OrderEntity savedOrderEntity = orderBusinessService.saveOrder(orderEntity);
+
+       for(ItemQuantity itemQuantity : saveOrderRequest.getItemQuantities())
+       {
+           OrderItemEntity orderItemEntity = new OrderItemEntity();
+           orderItemEntity.setOrder_id(savedOrderEntity);
+           orderItemEntity.setItem_id(itemBusinessService.getItemByUUID(itemQuantity.getItemId().toString()));
+           orderItemEntity.setQuantity(itemQuantity.getQuantity());
+           orderItemEntity.setPrice(itemQuantity.getPrice());
+           orderBusinessService.saveOrderItem(orderItemEntity);
+       }
+      SaveOrderResponse saveOrderResponse = new SaveOrderResponse().id(savedOrderEntity.getOrder_uuid()).status("ORDER SUCCESSFULLY PLACED");
+       return new ResponseEntity<SaveOrderResponse>(saveOrderResponse,HttpStatus.CREATED);
+}}

@@ -7,7 +7,8 @@ import java.io.Serializable;
 @Entity
 @Table(name="customer_address" , schema="restaurantdb")
 @NamedQueries({
-        @NamedQuery(name = "getAddressByCustomer_id",query="Select ad from CustomerAddressEntity ad where ad.customer_id= :customer_id ")
+        @NamedQuery(name = "getAddressByCustomer_id",query="Select ad from CustomerAddressEntity ad where ad.customer_id= :customer_id "),
+        @NamedQuery(name = "getCustomerByAddressId",query="select cd from CustomerAddressEntity cd where cd.address_id= :address_id")
 })
 public class CustomerAddressEntity implements Serializable {
 

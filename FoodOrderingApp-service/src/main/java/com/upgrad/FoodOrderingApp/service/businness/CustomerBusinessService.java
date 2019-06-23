@@ -239,6 +239,28 @@ public class CustomerBusinessService {
                 return customerDao.updatePassword(updateOldPassword);
             }
         }
+
+        public CustomerEntity getCustomer(String accessToken)throws AuthorizationFailedException
+        {
+            CustomerAuthEntity customerAuthEntity = customerDao.getCustomerAuthToken(accessToken);
+            if(customerAuthEntity==null)
+            {
+                throw new AuthorizationFailedException("ATH-001","Customer is not logged in!");
+            }
+
+            final ZonedDateTime now = ZonedDateTime.now();
+            if(customerAuthEntity.getLogoutAt().isBefore(now))
+            {
+                throw new AuthorizationFailedException("ATH-002","Customer is logged out ! Login again to access this endpoint!");
+
+            }
+
+            if(customerAuthEntity.getExpiresAt().isBefore(now))
+            {
+                throw new AuthorizationFailedException("ATH-003","Your session is expired.Log in again to access this endpoint!");
+            }
+            return customerAuthEntity.getCustomer_id();
+        }
     }
 
 

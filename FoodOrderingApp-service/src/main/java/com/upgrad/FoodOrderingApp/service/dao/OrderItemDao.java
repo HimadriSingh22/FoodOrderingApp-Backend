@@ -1,9 +1,7 @@
 package com.upgrad.FoodOrderingApp.service.dao;
-
 import com.upgrad.FoodOrderingApp.service.entity.OrderEntity;
 import com.upgrad.FoodOrderingApp.service.entity.OrderItemEntity;
 import org.springframework.stereotype.Repository;
-
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
@@ -23,6 +21,12 @@ public class OrderItemDao {
         {
             return null;
         }
+    }
+
+    public OrderItemEntity createOrderItem(OrderItemEntity orderItemEntity)
+    {
+        entityManager.persist(orderItemEntity);
+        return orderItemEntity;
     }
 }
 

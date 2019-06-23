@@ -6,6 +6,7 @@ import java.awt.font.NumericShaper;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.ZonedDateTime;
+import java.util.Date;
 
 @Entity
 @Table(name = "orders",schema = "restaurantdb")
@@ -38,7 +39,7 @@ public class OrderEntity implements Serializable {
 
     @Column(name = "date")
     @NotNull
-    private ZonedDateTime date;
+    private Date date;
 
     @JoinColumn(name="payment_id")
     @NotNull
@@ -57,8 +58,9 @@ public class OrderEntity implements Serializable {
     @NotNull
     private RestaurantEntity restaurant_id;
 
+    public OrderEntity(){}
 
-    public OrderEntity(@NotNull String order_uuid, @NotNull BigDecimal bill, @NotNull CouponEntity coupon_id, @NotNull BigDecimal discount, @NotNull ZonedDateTime date, @NotNull PaymentEntity payment_id, @NotNull CustomerEntity customer_id, @NotNull AddressEntity address_id, @NotNull RestaurantEntity restaurant_id) {
+    public OrderEntity(@NotNull String order_uuid, @NotNull BigDecimal bill, @NotNull CouponEntity coupon_id, @NotNull BigDecimal discount,Date date, @NotNull PaymentEntity payment_id, @NotNull CustomerEntity customer_id, @NotNull AddressEntity address_id, @NotNull RestaurantEntity restaurant_id) {
         this.order_uuid = order_uuid;
         this.bill = bill;
         this.coupon_id = coupon_id;
@@ -111,11 +113,11 @@ public class OrderEntity implements Serializable {
         this.discount = discount;
     }
 
-    public ZonedDateTime getDate() {
+    public Date getDate() {
         return date;
     }
 
-    public void setDate(ZonedDateTime date) {
+    public void setDate(Date date) {
         this.date = date;
     }
 

@@ -48,7 +48,7 @@ public class OrderDao {
          return null;
      }
  }
-
+//get list of customer orders
 public List<OrderEntity> getCustomerOrders(CustomerAuthEntity customerAuthEntity)
 {
     try {
@@ -57,6 +57,12 @@ public List<OrderEntity> getCustomerOrders(CustomerAuthEntity customerAuthEntity
     {
         return  null;
     }
+}
+//create new order
+public OrderEntity createOrder(OrderEntity orderEntity)
+{
+    entityManager.persist(orderEntity);
+    return orderEntity;
 }
 }
 

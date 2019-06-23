@@ -74,4 +74,24 @@ public class AddressDao {
         List<StateEntity> resultList = entityManager.createNamedQuery("getAllStates",StateEntity.class).getResultList();
         return resultList;
     }
+
+    public AddressEntity getAddressByUUID(String address_uuid)
+    {
+        try{
+            return entityManager.createNamedQuery("getAddressByUUID",AddressEntity.class).setParameter("address_uuid",address_uuid).getSingleResult();
+        }catch (NoResultException nre)
+        {
+            return null;
+        }
+    }
+
+    public CustomerAddressEntity matchCustomer(AddressEntity addressEntity)
+    {
+        try{
+        return entityManager.createNamedQuery("getCustomerByAddressId",CustomerAddressEntity.class).setParameter("address_id",addressEntity.getId()).getSingleResult();}
+        catch (NoResultException nre)
+        {
+            return null;
+        }
+    }
 }

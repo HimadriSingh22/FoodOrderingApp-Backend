@@ -8,9 +8,12 @@ import com.upgrad.FoodOrderingApp.service.entity.ItemEntity;
 import com.upgrad.FoodOrderingApp.service.entity.OrderEntity;
 import com.upgrad.FoodOrderingApp.service.entity.OrderItemEntity;
 import com.upgrad.FoodOrderingApp.service.entity.RestaurantEntity;
+import com.upgrad.FoodOrderingApp.service.exception.ItemNotFoundException;
 import com.upgrad.FoodOrderingApp.service.exception.RestaurantNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 
@@ -27,7 +30,7 @@ public class ItemBusinessService {
 
     @Autowired
     private OrderItemDao orderItemDao;
-
+    @Transactional(propagation = Propagation.REQUIRED)
     public List<ItemEntity> getItemsByPopularity(String restaurant_uuid)throws RestaurantNotFoundException
     {
       RestaurantEntity restaurantEntity = restaurantDao.getRestaurantByUuid(restaurant_uuid);
@@ -56,9 +59,21 @@ public class ItemBusinessService {
         return sortedItemEntityList;
     }
 
+    @Transactional(propagation = Propagation.REQUIRED)
     public List<OrderItemEntity> getItemsByOrder(OrderEntity orderEntity)
     {
         return orderItemDao.getItemsByOrder(orderEntity);
+    }
+
+    @Transactional(propagation = Propagation.REQUIRED)
+    public ItemEntity getItemByUUID(String item_uuid)throws ItemNotFoundException
+    {
+        ItemEntity itemEntity = itemDao.getItemByUUID(item_uuid);
+        if(itemEntity==null)
+        {
+            throw new ItemNotFoundException("INF-003","No item by this id exist");
+        }
+        return itemEntity;
     }
 
 }

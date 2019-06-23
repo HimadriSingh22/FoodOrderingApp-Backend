@@ -32,6 +32,7 @@ public class OrderItemEntity implements Serializable {
     @NotNull
     private Integer price;
 
+    public OrderItemEntity(){}
     public OrderItemEntity(@NotNull OrderEntity order_id, @NotNull ItemEntity item_id, @NotNull Integer quantity, @NotNull Integer price) {
         this.order_id = order_id;
         this.item_id = item_id;

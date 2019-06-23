@@ -3,9 +3,11 @@ package com.upgrad.FoodOrderingApp.service.businness;
 import com.upgrad.FoodOrderingApp.service.dao.CouponDao;
 import com.upgrad.FoodOrderingApp.service.dao.CustomerDao;
 import com.upgrad.FoodOrderingApp.service.dao.OrderDao;
+import com.upgrad.FoodOrderingApp.service.dao.OrderItemDao;
 import com.upgrad.FoodOrderingApp.service.entity.CouponEntity;
 import com.upgrad.FoodOrderingApp.service.entity.CustomerAuthEntity;
 import com.upgrad.FoodOrderingApp.service.entity.OrderEntity;
+import com.upgrad.FoodOrderingApp.service.entity.OrderItemEntity;
 import com.upgrad.FoodOrderingApp.service.exception.AuthorizationFailedException;
 import com.upgrad.FoodOrderingApp.service.exception.CouponNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +24,8 @@ public class OrderBusinessService {
     private CustomerDao customerDao;
     @Autowired
     private CouponDao couponDao;
+    @Autowired
+    OrderItemDao orderItemDao;
 
     public CouponEntity getCouponByName(String accessToken , String coupon_name)throws AuthorizationFailedException,CouponNotFoundException
     {
@@ -77,5 +81,25 @@ public class OrderBusinessService {
 
        List<OrderEntity> orderEntityList = orderDao.getCustomerOrders(customerAuthEntity);
         return orderEntityList;
+    }
+
+    public OrderEntity saveOrder(OrderEntity orderEntity)
+    {
+        return orderDao.createOrder(orderEntity);
+
+    }
+    public OrderItemEntity saveOrderItem(OrderItemEntity orderItemEntity)
+    {
+        return orderItemDao.createOrderItem(orderItemEntity);
+    }
+
+    public CouponEntity getCouponByUUID(String coupon_uuid)throws CouponNotFoundException
+    {
+        CouponEntity couponEntity =couponDao.getCouponByUUID(coupon_uuid);
+        if(couponEntity.equals(""))
+        {
+            throw new CouponNotFoundException("CPF-002","No coupon by this id");
+        }
+        return couponEntity;
     }
 }

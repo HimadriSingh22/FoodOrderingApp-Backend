@@ -9,7 +9,8 @@ import java.io.Serializable;
 @NamedQueries({
 @NamedQuery(name = "getAllAddressByAddressId",query="select ad from AddressEntity ad where ad.id= :address_id"),
         @NamedQuery(name = "deleteAddressById",query = "delete from AddressEntity ad where ad.uuid =:address_uuid"),
-        @NamedQuery(name = "getIdByAddressUuid",query = "select ad from AddressEntity ad  where ad.uuid= :address_uuid")
+        @NamedQuery(name = "getIdByAddressUuid",query = "select ad from AddressEntity ad  where ad.uuid= :address_uuid"),
+        @NamedQuery(name = "getAddressByUUID",query = "select ad from AddressEntity ad where ad.uuid= :address_uuid")
 })
 
 public class AddressEntity implements Serializable {
